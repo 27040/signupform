@@ -1,0 +1,174 @@
+/* Body styling */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Arial', sans-serif;
+    background: url('/src/images/img.jpeg') no-repeat;
+    background-size: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+  
+  .container {
+    display: flex;
+    width: 800px;
+    height: 550px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .left-container{
+   
+    flex: 1;
+    padding: 70px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  } 
+  .right-container {
+    flex: 2;
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .left-container{
+    border-right: 1px solid #e0e0e0;
+    background: url('/src/images/leftimage.jpeg') no-repeat;
+    background-size: 300%;
+  } 
+  .right-container {
+    background: url('/src/images/background.jpg') no-repeat;
+    background-size: 200%;
+    color: rgb(15, 14, 14);
+    border-top-right-radius: 12px;
+    border-bottom-right-radius: 12px;
+  }
+  
+  /* Register Container */
+  .register-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+  }
+  
+  /* Register Box */
+  .register-box {
+    background-color: #f8dddd;
+    width: 400px;
+    height: 520px;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(245, 142, 142, 0.2);
+    text-align: center;
+  }
+  h2{
+    margin-top: 150px;
+    margin-bottom: 20px;
+  }
+
+  p{
+    margin-top: 15px;
+  }
+  
+  /* Register Title */
+  .register-title {
+    font-size: 26px;
+    font-weight: bold;
+    margin-bottom: 15px;
+    margin-top: 0px;
+    color: #333333;
+    text-align: center;
+  }
+  
+  /* Signup Form */
+  .signup-form {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    align-items: center;
+    width: 100%;
+  }
+  
+  /* Input Group */
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+  }
+  
+  /* Labels */
+  .input-group label {
+    font-size: 14px;
+    color: #333;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    text-align: left;
+    font-weight: bold;
+  }
+  
+  /* Input Fields */
+  .signup-form input {
+    width: 95%;
+    padding: 10px 10px;
+    margin: 5px 0;
+    border: 2px solid #ae8080;
+    border-radius: 20px;
+    font-size: 14px;
+    outline: none;
+  }
+  
+  /* Focus effect for input fields */
+  .signup-form input:focus {
+    border-color: #fa8072;
+  }
+  
+  /* Buttons */
+  .signup-form button {
+    width: 90%;
+    padding: 12px 20px;
+    margin-top: 15px;
+    background: linear-gradient(to right, #fc5c7d, #6a82fb);
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: background 0.3s ease-in-out;
+  }
+  
+  .signup-form button:hover {
+    background: linear-gradient(to right, #6a82fb, #fc5c7d);
+  }
+  .login-button {
+    width: 90%;
+    padding: 12px 20px;
+    margin-top: 15px;
+    background: linear-gradient(to right, #fc5c7d, #6a82fb);
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    border: none;
+    border-radius: 60px;
+    cursor: pointer;
+    transition: background 0.3s ease-in-out;
+  }
+  .login-button button:hover {
+    background: linear-gradient(to right, #6a82fb, #fc5c7d);
+  }
+  
+  /* Responsive Design */
+  @media screen and (max-width: 480px) {
+    .register-box {
+      width: 90%;
+    }
+  }
