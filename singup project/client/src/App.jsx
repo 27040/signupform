@@ -1,19 +1,20 @@
-import { useState } from 'react'
-import 'bootstrap/dist/css/bootstrap.min.css'
-import Signup from './Signup'
+import React from 'react';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import Signup from './Signup';
+import Login from './Login';
+import Home from './home';
 
-
-
-function App() {
-  const [count, setCount] = useState(0)
-
+const App = () => {
   return (
-    
-      <div>
-         <Signup/>
-        </div>
-       
-  )
-}
+    <Router>
+      <Routes>
+        <Route path="/" element={<Signup />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/home" element={<Home />} />
+        <Route path="/signup" element={<Signup />} />
+      </Routes>
+    </Router>
+  );
+};
 
-export default App
+export default App;

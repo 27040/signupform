@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './App.css';
 
 const Signup = () => {
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     username: '',
     email: '',
@@ -23,6 +26,7 @@ const Signup = () => {
     try {
       const { username, email, password, confirmPassword } = formData;
 
+      // Send the signup data to the server
       const response = await axios.post('http://localhost:5000/api/auth/signup', {
         username,
         email,
@@ -30,11 +34,16 @@ const Signup = () => {
         confirmPassword,
       });
 
+      // Notify the user of successful signup
       console.log(response.data);
       alert('User created successfully!');
+
+      // Redirect to the login page
+      navigate('/login');
     } catch (error) {
+      // Handle errors and display the error message
       console.error(error);
-      alert(error.response.data.message);
+      alert(error.response?.data?.message || 'An error occurred. Please try again.');
     }
   };
 
@@ -96,9 +105,15 @@ const Signup = () => {
       </div>
 
       <div className="right-container">
-        <h2>Welcome Back!</h2>
-        <button className="login-button">Sign In</button>
-        <p className="login-message">Already have an account? Please login.</p>
+        <h1>Welcome Back!</h1>
+        <h2>Hello !!</h2>
+        <button
+          className="login-button"
+          onClick={() => navigate('/login')} // Redirect to login page
+        >
+          Sign In
+        </button>
+        <p className="login-message"><b>Already have an account? Please login. </b></p>
       </div>
     </div>
   );

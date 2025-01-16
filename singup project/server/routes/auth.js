@@ -3,6 +3,7 @@ const User = require('../models/User');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const router = express.Router();
+const LoginRecord = require('../models/LoginRecord');
 
 // Signup route
 router.post('/signup', async (req, res) => {
@@ -52,6 +53,39 @@ router.post('/login', async (req, res) => {
     });
 
     res.json({ token });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+// Login route
+router.post('/login', async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(400).json({ message: 'User not found' });
+    }
+
+    const isMatch = await user.comparePassword(password);
+    if (!isMatch) {
+      return res.status(400).json({ message: 'Invalid credentials' });
+    }
+
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+      expiresIn: '1h',
+    });
+
+    // Log the login details
+    const loginRecord = new LoginRecord({
+      userId: user._id,
+      email: user.email,
+    });
+
+    await loginRecord.save(); // Save the login record to the database
+
+    res.json({ token, message: 'Login successful' });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
