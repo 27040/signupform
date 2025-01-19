@@ -44,6 +44,7 @@ body {
     background-size: 300%;
   } 
   .right-container {
+   
     background: url('/src/images/background.jpg') no-repeat;
     background-size: 200%;
     color: rgb(15, 14, 14);
