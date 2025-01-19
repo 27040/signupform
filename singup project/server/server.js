@@ -21,6 +21,10 @@ mongoose
 // Routes
 app.use('/api/auth', authRoutes);
 
+export default (req, res) => {
+  res.status(200).json({ message: 'Hello from server.js!' });
+};
+
 
 // Start the server
 app.listen(port, () => {
