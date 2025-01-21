@@ -14,8 +14,7 @@ body {
   .container {
     display: flex;
     width: 750px;
-    height: 480px;
-    background: rgb(248, 130, 130);
+    height: 550px;
     border-radius: 20px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   }
@@ -71,8 +70,8 @@ body {
     text-align: center;
   }
   h2 {
-    margin-bottom: 30px;
-    margin-top: 0%;
+  
+ 
     color: #333;
   }
   h1 {

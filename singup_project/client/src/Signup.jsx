@@ -13,11 +13,17 @@ const Signup = () => {
     confirmPassword: '',
   });
 
+  const [file, setFile] = useState(null);
+
   const handleChange = (e) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
     });
+  };
+
+  const handleFileChange = (e) => {
+    setFile(e.target.files[0]);
   };
 
   const handleSubmit = async (e) => {
@@ -26,22 +32,33 @@ const Signup = () => {
     try {
       const { username, email, password, confirmPassword } = formData;
 
+      // Upload the image
+      let imageUrl = '';
+      if (file) {
+        const formData = new FormData();
+        formData.append('image', file);
+
+        const uploadResponse = await axios.post('https://signupformback.vercel.app/api/upload', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+
+        imageUrl = uploadResponse.data.imageUrl;
+      }
+
       // Send the signup data to the server
-      const response = await axios.post('http://localhost:5000/api/auth/signup', {
+      const response = await axios.post('https://signupformback.vercel.app/api/auth/signup', {
         username,
         email,
         password,
         confirmPassword,
+        profileImage: imageUrl,
       });
 
-      // Notify the user of successful signup
-      console.log(response.data);
       alert('User created successfully!');
-
-      // Redirect to the login page
       navigate('/login');
     } catch (error) {
-      // Handle errors and display the error message
       console.error(error);
       alert(error.response?.data?.message || 'An error occurred. Please try again.');
     }
@@ -100,20 +117,24 @@ const Signup = () => {
             />
           </div>
 
+          <div className="input-group">
+            <label htmlFor="profileImage">Profile Image</label>
+            <input type="file" id="profileImage" onChange={handleFileChange} />
+          </div>
+
           <button type="submit">Sign Up</button>
         </form>
       </div>
 
       <div className="right-container">
         <h1>Welcome Back!</h1>
-        <h2>Hello !!</h2>
         <button
           className="login-button"
-          onClick={() => navigate('/login')} // Redirect to login page
+          onClick={() => navigate('/login')}
         >
           Sign In
         </button>
-        <p className="login-message"><b>Already have an account? Please login. </b></p>
+        <p className="login-message"><b>Already have an account? Please login.</b></p>
       </div>
     </div>
   );
