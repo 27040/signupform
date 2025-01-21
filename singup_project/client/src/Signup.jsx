@@ -38,7 +38,7 @@ const Signup = () => {
         const formData = new FormData();
         formData.append('image', file);
 
-        const uploadResponse = await axios.post('https://signupformback.vercel.app/api/upload', formData, {
+        const uploadResponse = await axios.post('https://signupformback.vercel.app/upload', formData, {
           headers: {
             'Content-Type': 'multipart/form-data',
           },
@@ -48,7 +48,7 @@ const Signup = () => {
       }
 
       // Send the signup data to the server
-      const response = await axios.post('https://signupformback.vercel.app/api/auth/signup', {
+      const response = await axios.post('https://signupformback.vercel.app/api/signup', {
         username,
         email,
         password,
