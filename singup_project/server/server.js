@@ -39,6 +39,7 @@ app.use(cors(
 
 ));
 app.use(express.json());
+app.use(fileUpload({useTempfiles: true, tempFileDir: '/tmp/'}));
 
 // Connect to MongoDB
 mongoose

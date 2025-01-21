@@ -33,19 +33,26 @@ const Signup = () => {
       const { username, email, password, confirmPassword } = formData;
 
       // Upload the image
-      let imageUrl = '';
-      if (file) {
-        const formData = new FormData();
-        formData.append('image', file);
+      const handleFileChange = (e) => {
+        const selectedFile = e.target.files[0];
+        const allowedTypes = ["image/jpeg", "image/png", "application/pdf"]; // Allowed MIME types
+        const maxFileSize = 2 * 1024 * 1024; // 2MB
 
-        const uploadResponse = await axios.post('https://signupformback.vercel.app/upload', formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        });
+        if (selectedFile && !allowedTypes.includes(selectedFile.type)) {
+            setError("Only JPG, PNG, or PDF files are allowed.");
+            return;
+        }
 
-        imageUrl = uploadResponse.data.imageUrl;
-      }
+        if (selectedFile && selectedFile.size > maxFileSize) {
+            setError("File size should not exceed 2MB.");
+            return;
+        }
+
+        setFile(selectedFile);
+        setError(""); // Clear any file-related errors
+    };
+
+    
 
       // Send the signup data to the server
       const response = await axios.post('https://signupformback.vercel.app/api/signup', {
