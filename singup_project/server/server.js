@@ -50,13 +50,25 @@ mongoose
 // Routes
 app.use('/api/auth', authRoutes);
 
-// Media upload endpoint
-app.post('/api/upload', upload.single('image'), (req, res) => {
-  if (!req.file) {
-    return res.status(400).json({ message: 'No file uploaded' });
+ // Handle image upload if provided
+ if (req.files && req.files.image) {
+  const file = req.files.image;
+  const allowedTypes = ["image/jpeg", "image/png", "application/pdf"]; // Allowed MIME types
+  const maxFileSize = 2 * 1024 * 1024; // 2MB
+
+  // Validate file type and size
+  if (!allowedTypes.includes(file.mimetype)) {
+    return res.status(400).json({ message: "Only JPG, PNG, or PDF files are allowed." });
   }
-  res.status(200).json({ imageUrl: req.file.path });
-});
+
+  if (file.size > maxFileSize) {
+    return res.status(400).json({ message: "File size should not exceed 2MB." });
+  }
+
+  // Upload to Cloudinary
+  const uploadResult = await cloudinary.uploader.upload(file.tempFilePath);
+  imageUrl = uploadResult.secure_url; // Save Cloudinary image URL
+}
 
 app.get('/', (req, res) => {
   res.send('Hello World!');

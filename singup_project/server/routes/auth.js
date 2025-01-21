@@ -24,6 +24,7 @@ router.post('/signup', async (req, res) => {
       username,
       email,
       password,
+      image: imageUrl,
     });
 
     await newUser.save();
