@@ -30,16 +30,12 @@ const storage = new CloudinaryStorage({
 const upload = multer({ storage });
 
 // Middleware
-app.use(cors(
-  {
-    origin:["https://signupformfrontend-cyan.vercel.app"],
-    methods:["POST","GET"],
-    credentials:true
-  }
-
-));
+app.use(cors({
+  origin: ["https://signupformfrontend-cyan.vercel.app"],
+  methods: ["POST", "GET"],
+  credentials: true,
+}));
 app.use(express.json());
-app.use(fileUpload({useTempfiles: true, tempFileDir: '/tmp/'}));
 
 // Connect to MongoDB
 mongoose
@@ -47,28 +43,23 @@ mongoose
   .then(() => console.log('MongoDB connected'))
   .catch((err) => console.log(err));
 
+// Image upload route
+app.post('/api/upload', upload.single('profileImage'), (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ message: 'No file uploaded.' });
+    }
+
+    // File successfully uploaded to Cloudinary
+    const imageUrl = req.file.path; // Secure URL from Cloudinary
+    res.status(200).json({ imageUrl });
+  } catch (err) {
+    res.status(500).json({ message: 'Error uploading image', error: err.message });
+  }
+});
+
 // Routes
 app.use('/api/auth', authRoutes);
-
- // Handle image upload if provided
- if (req.files && req.files.image) {
-  const file = req.files.image;
-  const allowedTypes = ["image/jpeg", "image/png", "application/pdf"]; // Allowed MIME types
-  const maxFileSize = 2 * 1024 * 1024; // 2MB
-
-  // Validate file type and size
-  if (!allowedTypes.includes(file.mimetype)) {
-    return res.status(400).json({ message: "Only JPG, PNG, or PDF files are allowed." });
-  }
-
-  if (file.size > maxFileSize) {
-    return res.status(400).json({ message: "File size should not exceed 2MB." });
-  }
-
-  // Upload to Cloudinary
-  const uploadResult = await cloudinary.uploader.upload(file.tempFilePath);
-  imageUrl = uploadResult.secure_url; // Save Cloudinary image URL
-}
 
 app.get('/', (req, res) => {
   res.send('Hello World!');

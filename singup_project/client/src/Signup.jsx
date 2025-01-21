@@ -14,6 +14,7 @@ const Signup = () => {
   });
 
   const [file, setFile] = useState(null);
+  const [error, setError] = useState('');
 
   const handleChange = (e) => {
     setFormData({
@@ -23,7 +24,23 @@ const Signup = () => {
   };
 
   const handleFileChange = (e) => {
-    setFile(e.target.files[0]);
+    const selectedFile = e.target.files[0];
+    const allowedTypes = ['image/jpeg', 'image/png', 'application/pdf']; // Allowed MIME types
+    const maxFileSize = 2 * 1024 * 1024; // 2MB
+
+    // Validate file type and size
+    if (selectedFile && !allowedTypes.includes(selectedFile.type)) {
+      setError('Only JPG, PNG, or PDF files are allowed.');
+      return;
+    }
+
+    if (selectedFile && selectedFile.size > maxFileSize) {
+      setError('File size should not exceed 2MB.');
+      return;
+    }
+
+    setFile(selectedFile);
+    setError(''); // Clear any previous errors
   };
 
   const handleSubmit = async (e) => {
@@ -32,30 +49,21 @@ const Signup = () => {
     try {
       const { username, email, password, confirmPassword } = formData;
 
-      // Upload the image
-      const handleFileChange = (e) => {
-        const selectedFile = e.target.files[0];
-        const allowedTypes = ["image/jpeg", "image/png", "application/pdf"]; // Allowed MIME types
-        const maxFileSize = 2 * 1024 * 1024; // 2MB
+      let imageUrl = null;
+      if (file) {
+        // Upload the image to the backend
+        const imageData = new FormData();
+        imageData.append('profileImage', file);
 
-        if (selectedFile && !allowedTypes.includes(selectedFile.type)) {
-            setError("Only JPG, PNG, or PDF files are allowed.");
-            return;
-        }
+        const uploadResponse = await axios.post('https://signupformback.vercel.app/api/upload', imageData, {
+          headers: { 'Content-Type': 'multipart/form-data' },
+        });
 
-        if (selectedFile && selectedFile.size > maxFileSize) {
-            setError("File size should not exceed 2MB.");
-            return;
-        }
-
-        setFile(selectedFile);
-        setError(""); // Clear any file-related errors
-    };
-
-    
+        imageUrl = uploadResponse.data.imageUrl; // Get image URL from backend response
+      }
 
       // Send the signup data to the server
-      const response = await axios.post('https://signupformback.vercel.app/api/signup', {
+      const response = await axios.post('https://signupformback.vercel.app/api/auth/signup', {
         username,
         email,
         password,
@@ -85,6 +93,7 @@ const Signup = () => {
               placeholder="Enter your username"
               value={formData.username}
               onChange={handleChange}
+              required
             />
           </div>
 
@@ -97,6 +106,7 @@ const Signup = () => {
               placeholder="Enter your email"
               value={formData.email}
               onChange={handleChange}
+              required
             />
           </div>
 
@@ -109,6 +119,7 @@ const Signup = () => {
               placeholder="Enter your password"
               value={formData.password}
               onChange={handleChange}
+              required
             />
           </div>
 
@@ -121,12 +132,14 @@ const Signup = () => {
               placeholder="Confirm your password"
               value={formData.confirmPassword}
               onChange={handleChange}
+              required
             />
           </div>
 
           <div className="input-group">
             <label htmlFor="profileImage">Profile Image</label>
             <input type="file" id="profileImage" onChange={handleFileChange} />
+            {error && <p className="error-message">{error}</p>}
           </div>
 
           <button type="submit">Sign Up</button>
@@ -135,13 +148,12 @@ const Signup = () => {
 
       <div className="right-container">
         <h1>Welcome Back!</h1>
-        <button
-          className="login-button"
-          onClick={() => navigate('/login')}
-        >
+        <button className="login-button" onClick={() => navigate('/login')}>
           Sign In
         </button>
-        <p className="login-message"><b>Already have an account? Please login.</b></p>
+        <p className="login-message">
+          <b>Already have an account? Please login.</b>
+        </p>
       </div>
     </div>
   );
