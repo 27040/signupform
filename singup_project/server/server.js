@@ -30,42 +30,31 @@ const storage = new CloudinaryStorage({
 const upload = multer({ storage });
 
 // Middleware
-app.use(cors({
-  origin: ["https://signupformfrontend-cyan.vercel.app"],
-  methods: ["POST", "GET"],
-  credentials: true,
-}));
+app.use(cors());
 app.use(express.json());
 
 // Connect to MongoDB
 mongoose
-  .connect(process.env.DB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+  .connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => console.log('MongoDB connected'))
   .catch((err) => console.log(err));
 
-// Image upload route
-app.post('/api/upload', upload.single('profileImage'), (req, res) => {
-  try {
-    if (!req.file) {
-      return res.status(400).json({ message: 'No file uploaded.' });
-    }
-
-    // File successfully uploaded to Cloudinary
-    const imageUrl = req.file.path; // Secure URL from Cloudinary
-    res.status(200).json({ imageUrl });
-  } catch (err) {
-    res.status(500).json({ message: 'Error uploading image', error: err.message });
-  }
-});
-
 // Routes
 app.use('/api/auth', authRoutes);
+
+// Media upload endpoint
+app.post('/api/upload', upload.single('image'), (req, res) => {
+  if (!req.file) {
+    return res.status(400).json({ message: 'No file uploaded' });
+  }
+  res.status(200).json({ imageUrl: req.file.path });
+});
 
 app.get('/', (req, res) => {
   res.send('Hello World!');
 });
 
-// Start the server
+// Start the server1
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
 });

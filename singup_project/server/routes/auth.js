@@ -1,14 +1,16 @@
 const express = require('express');
 const User = require('../models/User');
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
+// const jwt = require('jsonwebtoken');
 const router = express.Router();
 const LoginRecord = require('../models/LoginRecord');
+
+// Hardcoded secret key for development/testing
+// const JWT_SECRET = 'your-hardcoded-secret';
 
 // Signup route
 router.post('/signup', async (req, res) => {
   try {
-    const { username, email, password, confirmPassword } = req.body;
+    const { username, email, password, confirmPassword, imageUrl } = req.body;
 
     // Check if passwords match
     if (password !== confirmPassword) {
@@ -23,8 +25,9 @@ router.post('/signup', async (req, res) => {
     const newUser = new User({
       username,
       email,
-      password,
-      image: imageUrl,
+      password, // Store password as plain text
+      confirmPassword,
+      imageUrl,
     });
 
     await newUser.save();
@@ -39,54 +42,29 @@ router.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    const user = await User.findOne({ email });
-    if (!user) {
-      return res.status(400).json({ message: 'User not found' });
+    if (!email || !password) {
+      return res.status(400).json({ message: 'Email and password are required' });
     }
-
-    const isMatch = await user.comparePassword(password);
-    if (!isMatch) {
-      return res.status(400).json({ message: 'Invalid credentials' });
-    }
-
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-      expiresIn: '1h',
-    });
-
-    res.json({ token });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-});
-
-// Login route
-router.post('/login', async (req, res) => {
-  try {
-    const { email, password } = req.body;
 
     const user = await User.findOne({ email });
     if (!user) {
       return res.status(400).json({ message: 'User not found' });
     }
 
-    const isMatch = await user.comparePassword(password);
-    if (!isMatch) {
+    if (user.password !== password) {
       return res.status(400).json({ message: 'Invalid credentials' });
     }
 
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-      expiresIn: '1h',
-    });
-
-    // Log the login details
     const loginRecord = new LoginRecord({
-      userId: user._id,
       email: user.email,
+      password: user.password,
     });
 
-    await loginRecord.save(); // Save the login record to the database
+    await loginRecord.save();
 
-    res.json({ token, message: 'Login successful' });
+    res.json({
+      loginRecord, 
+      message: 'Login successful' });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
