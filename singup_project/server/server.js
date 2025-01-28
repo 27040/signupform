@@ -30,7 +30,13 @@ const storage = new CloudinaryStorage({
 const upload = multer({ storage });
 
 // Middleware
-app.use(cors());
+app.use(cors(
+  {
+    origin: 'https://signupformfrontend-cyan.vercel.app',
+    methods: ['GET', 'POST'],
+    credentials: true,
+  }
+));
 app.use(express.json());
 
 // Connect to MongoDB
