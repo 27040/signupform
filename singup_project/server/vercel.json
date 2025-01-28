@@ -1,7 +1,7 @@
 {
   "version": 2,
   "builds": [
-    { "src": "*.js", "use": "@vercel/node", "config": { "maxDuration" : 60} }
+    { "src": "*.js", "use": "@vercel/node", "config": {"memory":512, "maxDuration" : 60} }
   ],
   "routes": [
     { "src": "/(.*)", "dest": "/" }
